@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consistent Spectral PCA on Face Datasets</title>
+  <style>
+    body { padding: 16px; font-family: Arial, sans-serif; }
+    .table { border-collapse: collapse; width: 80%; }
+    .table th, .table td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    .table th { background-color: #f0f0f0; }
+    select { padding: 4px; margin-right: 8px; }
+    img.legend { width: 40%; margin-bottom: 16px; }
+    .graph-container { position: relative; padding-bottom: 40px; padding-left: 40px; }
+    .axis-label-x { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); font-size: 0.8em; }
+    .axis-label-y { position: absolute; top: 40%; left: -20px; transform: translateY(-50%) rotate(-90deg); font-size: 0.8em; }
+    .graph-container img { width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <h2>Consistent PCA on Face Datasets</h2>
+
+  <img src="./legend_pca.png" alt="Legend" class="legend">
+
+  <table class="table" id="graphTable">
+    <thead>
+      <tr>
+        <th>k</th>
+        <th>k = 2</th>
+        <th>k = 3</th>
+        <th>k = 5</th>
+        <th>k = 10</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- plots -->
+    </tbody>
+  </table>
+
+  <script>
+    const types = ['', '_zoom'];
+    const ids = ['k02', 'k03', 'k05', 'k10'];
+
+    function loadGraphs(zoom) {
+      const tbody = document.querySelector('#graphTable tbody');
+      tbody.innerHTML = '';
+
+      types.forEach(type => {
+        const tr = document.createElement('tr');
+        const typeCell = document.createElement('td');
+        typeCell.textContent = type;
+        tr.appendChild(typeCell);
+
+        ids.forEach(id => {
+          const td = document.createElement('td');
+
+          const container = document.createElement('div');
+          container.className = 'graph-container';
+
+          const img = document.createElement('img');
+          img.src = `./${id}${type}/avg.png`;
+          img.alt = `${id}_${type}`;
+
+          const xAxis = document.createElement('div');
+          xAxis.className = 'axis-label-x';
+          xAxis.textContent = 'Obj^{PCA}';
+
+          const yAxis = document.createElement('div');
+          yAxis.className = 'axis-label-y';
+          yAxis.textContent = `IC^{PCA}`;
+
+          container.appendChild(img);
+          container.appendChild(xAxis);
+          container.appendChild(yAxis);
+
+          td.appendChild(container);
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateGraphs() {
+      loadGraphs();
+    }
+    updateGraphs();
+  </script>
+</body>
+</html>

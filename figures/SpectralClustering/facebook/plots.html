@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consistent Spectral Clustering on Facebook Datasets</title>
+  <style>
+    body { padding: 16px; font-family: Arial, sans-serif; }
+    .table { border-collapse: collapse; width: 100%; }
+    .table th, .table td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    .table th { background-color: #f0f0f0; }
+    select { padding: 4px; margin-right: 8px; }
+    img.legend { width: 40%; margin-bottom: 16px; }
+    .graph-container { position: relative; padding-bottom: 40px; padding-left: 40px; }
+    .axis-label-x { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); font-size: 0.8em; }
+    .axis-label-y { position: absolute; top: 40%; left: -20px; transform: translateY(-50%) rotate(-90deg); font-size: 0.8em; }
+    .graph-container img { width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <h2>Consistent Spectral Clustering on Facebook Datasets</h2>
+
+  <div>
+    <label>The number of clusters:</label>
+    <select id="paramSelect">
+      <option value="k02">k = 2</option>
+      <option value="k03">k = 3</option>
+      <option value="k05">k = 5</option>
+      <option value="k10">k = 10</option>
+    </select>
+
+    <label>Zoom:</label>
+    <select id="zoomSelect">
+      <option value="">Normal</option>
+      <option value="_zoom">Zoomed</option>
+    </select>
+  </div>
+
+  <img src="./legend_sc.png" alt="Legend" class="legend">
+
+  <table class="table" id="graphTable">
+    <thead>
+      <tr>
+        <th>Graph ID</th>
+        <th>0</th>
+        <th>107</th>
+        <th>1684</th>
+        <th>1912</th>
+        <th>3437</th>
+        <th>348</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- plots -->
+    </tbody>
+  </table>
+
+  <script>
+    const types = ['embed', 'centroid', 'cluster'];
+    const ids = ['00', '01', '02', '03', '04', '05'];
+
+    function loadGraphs(param, zoom) {
+      const tbody = document.querySelector('#graphTable tbody');
+      tbody.innerHTML = '';
+
+      types.forEach(type => {
+        const tr = document.createElement('tr');
+        const typeCell = document.createElement('td');
+        typeCell.textContent = type;
+        tr.appendChild(typeCell);
+
+        ids.forEach(id => {
+          const td = document.createElement('td');
+
+          const container = document.createElement('div');
+          container.className = 'graph-container';
+
+          const img = document.createElement('img');
+          img.src = `./${param}${zoom}/${type}_id${id}.png`;
+          img.alt = `${type}_${id}`;
+
+          const xAxis = document.createElement('div');
+          xAxis.className = 'axis-label-x';
+          xAxis.textContent = 'Obj^{SC}';
+
+          const yAxis = document.createElement('div');
+          yAxis.className = 'axis-label-y';
+          yAxis.textContent = `IC^{SC}_{${type}}`;
+
+          container.appendChild(img);
+          container.appendChild(xAxis);
+          container.appendChild(yAxis);
+
+          td.appendChild(container);
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateGraphs() {
+      const param = document.getElementById('paramSelect').value;
+      const zoom = document.getElementById('zoomSelect').value;
+      loadGraphs(param, zoom);
+    }
+
+    document.getElementById('paramSelect').addEventListener('change', updateGraphs);
+    document.getElementById('zoomSelect').addEventListener('change', updateGraphs);
+
+    updateGraphs();
+  </script>
+</body>
+</html>
